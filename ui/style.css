@@ -45,6 +45,17 @@ body { display: flex; }
 #viewer { flex: 1; min-width: 0; position: relative; }
 #viewer canvas { display: block; }
 
+/* バージョン表示: ビュー右下に控えめに。canvas操作を邪魔しないよう透過 */
+#version {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  font-size: var(--fs-sm);
+  color: #454b54;          /* 背景(#1e2127)に近い目立たない灰 */
+  pointer-events: none;
+  user-select: none;
+}
+
 .pane { padding: 12px 14px; border-bottom: 1px solid var(--border); }
 
 .pane-label {

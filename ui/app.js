@@ -358,6 +358,9 @@
 
   // ---- 初期化 ----
   function init() {
+    window.pywebview.api.version().then(function (v) {
+      document.getElementById("version").textContent = "v" + v;
+    }).catch(function () { /* バージョン表示は必須ではないので握りつぶす */ });
     window.pywebview.api.list_models().then(function (result) {
       applyModels(result);
       startPolling();

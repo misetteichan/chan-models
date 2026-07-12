@@ -56,6 +56,11 @@
 各メソッドはJSON化可能な値を返す。**このスキーマを変更する場合は本節・app/api.py・
 ui/app.js を同時に更新すること。**
 
+### `version() -> str`
+
+アプリのバージョン文字列(`app/__init__.py` の `__version__`)。UIがビュー右下に
+`v0.1.0` の形で表示する。
+
 ### `list_models() -> Model[]`
 
 ```jsonc

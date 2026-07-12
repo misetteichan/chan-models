@@ -11,7 +11,7 @@ import threading
 import time
 import traceback
 
-from app import export
+from app import __version__, export
 from app.meshing import part_to_mesh_dict
 from app.registry import discover_models, models_signature
 
@@ -31,6 +31,10 @@ class Api:
         self._models_sig = models_signature()
         self._last_parts = []       # 直近の generate 成功時の Part リスト
         self._last_model_id = None  # エクスポートのデフォルトファイル名に使う
+
+    def version(self):
+        """アプリのバージョン文字列(app/__init__.py の __version__)。UIの表示用。"""
+        return __version__
 
     def _serialize_models(self):
         return [
