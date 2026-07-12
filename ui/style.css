@@ -1,0 +1,150 @@
+/* ダークテーマ基調・最小限(装飾的な作り込みはオーナー相談後: CLAUDE.md 7) */
+
+:root {
+  --bg: #1e2127;
+  --bg-panel: #262a31;
+  --bg-input: #31363f;
+  --border: #3a404a;
+  --fg: #d6dae1;
+  --fg-dim: #8b919c;
+  --accent: #4a90d9;
+  --error: #e06c75;
+
+  /* フォントスケール(役割ごとに固定): 見出し / 補助 / 本文 */
+  --fs-label: 11px;  /* セクション見出し(モデル・パーツ等。dim + letter-spacing) */
+  --fs-sm: 12px;     /* 補助テキスト(説明・単位・メッシュ数・ステータス) */
+  --fs-base: 13px;   /* 本文・操作要素(セレクト・ラベル・入力・ボタン) */
+}
+
+* { box-sizing: border-box; }
+
+/* フォーム部品はフォントを継承しない(UA既定10pt)ので本文に揃える */
+button, input, select { font: inherit; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font: var(--fs-base)/1.5 -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+}
+
+body { display: flex; }
+
+#sidebar {
+  width: 300px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+
+#viewer { flex: 1; min-width: 0; position: relative; }
+#viewer canvas { display: block; }
+
+.pane { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+
+.pane-label {
+  display: block;
+  font-size: var(--fs-label);
+  letter-spacing: 0.04em;
+  color: var(--fg-dim);
+  margin-bottom: 6px;
+}
+
+/* 折りたたみトグル(パラメータ欄) */
+.pane-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+.pane-toggle input { accent-color: var(--accent); margin: 0; }
+#params-form:not([hidden]) { margin-top: 10px; }
+
+#model-select {
+  width: 100%;
+  padding: 5px 6px;
+  background: var(--bg-input);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+#model-desc { margin: 8px 0 0; font-size: var(--fs-sm); color: var(--fg-dim); }
+
+/* パラメータフォーム */
+.param { margin-bottom: 10px; }
+.param-head { display: flex; align-items: center; gap: 6px; }
+.param-head label { flex: 1; }
+.param-head .unit { color: var(--fg-dim); font-size: var(--fs-sm); }
+
+.param input[type="number"] {
+  width: 72px;
+  padding: 3px 5px;
+  background: var(--bg-input);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  text-align: right;
+}
+
+.param input[type="range"] {
+  width: 100%;
+  margin: 6px 0 0;
+  accent-color: var(--accent);
+}
+
+.param-bool { display: flex; align-items: center; gap: 8px; }
+.param-bool input { accent-color: var(--accent); }
+
+/* パーツ一覧 */
+#parts-list { list-style: none; margin: 0; padding: 0; }
+#parts-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+#parts-list input { accent-color: var(--accent); }
+.swatch {
+  width: 12px; height: 12px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  flex: none;
+}
+.tri-count { margin-left: auto; color: var(--fg-dim); font-size: var(--fs-sm); }
+
+/* ボタン */
+.btn-row { display: flex; gap: 8px; }
+.btn-row + .btn-row { margin-top: 8px; }
+.btn-row button {
+  flex: 1;
+  padding: 6px 0;
+  background: var(--bg-input);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-row button:hover { border-color: var(--accent); }
+.btn-row button:disabled { opacity: 0.5; cursor: default; }
+
+/* デフォルトに戻す(パラメータ欄内。フォーム展開時のみ表示) */
+#reset-row { margin-top: 10px; }
+
+/* ステータス欄 */
+#status {
+  margin-top: auto;
+  padding: 8px 14px;
+  font-size: var(--fs-sm);
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  min-height: 34px;
+  word-break: break-all;
+}
+#status.error { color: var(--error); }
