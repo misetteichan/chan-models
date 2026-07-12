@@ -13,6 +13,8 @@ FACE_RADIUS = 30.0
 BODY_DEPTH = 300.0
 HOLE_RADIUS = 0.3
 PANEL_OFFSET = 0.2
+# 表情パネルの厚みは本体サイズによらず、この大きさ(mm)指定時の厚みで一定にする
+PANEL_THICKNESS_SIZE = 12.0
 
 
 def _rounded_cube(width, height, depth, radius):
@@ -114,9 +116,12 @@ class StackCharmMono(Model):
                               FACE_DEPTH, FACE_RADIUS)
                 .translate((0, 0, BODY_DEPTH))
                 .scale((scale, scale, scale)))
+        # 表情パネルは XY を size に追従させつつ、Z(厚み)だけは
+        # PANEL_THICKNESS_SIZE 相当で固定する。前面(本体前面)に揃える。
+        panel_z_scale = PANEL_THICKNESS_SIZE / FACE_WIDTH
         panel = (_panel()
-                 .translate((0, 0, FACE_DEPTH + BODY_DEPTH))
-                 .scale((scale, scale, scale)))
+                 .scale((scale, scale, panel_z_scale))
+                 .translate((0, 0, (FACE_DEPTH + BODY_DEPTH) * scale)))
 
         # チャーム穴は本体の拡大率にかかわらず半径0.3 mmに保つ。
         hole = (Manifold.cylinder(5.0, HOLE_RADIUS)
