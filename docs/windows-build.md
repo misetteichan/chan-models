@@ -46,6 +46,7 @@ dist\chan-models\chan-models.exe
 | 症状 | 原因と対処 |
 |---|---|
 | ウィンドウは開くが一切操作できず、コンソールに `[pywebview] Error while processing window.native.AccessibilityObject...: maximum recursion depth exceeded` | js_apiオブジェクト(`Api`)に `webview.Window` などの複雑なオブジェクトを**公開属性**として持たせると発生する。pywebviewは公開属性を再帰的にJSへ公開するため、WinFormsのnativeオブジェクトの循環グラフで無限再帰しブリッジが壊れる。**js_apiには関数以外の公開属性を置かず、内部状態は `_` 付きにする**(macOSのcocoaでは発症しないため、Windowsで初めて顕在化する点に注意) |
+| **ダウンロードした配布zipだけ**起動に失敗し `RuntimeError: Failed to resolve Python.Runtime.Loader.Initialize from ...\pythonnet\runtime\Python.Runtime.dll`(ローカルでビルドしたものは動く) | ブラウザ由来のzipに付く **Mark of the Web(Zone.Identifier)** をExplorerが展開先の全ファイルへ引き継ぎ、.NET Framework がネット由来の `Python.Runtime.dll` のロードを拒否するため(v1.0.0のRelease配布で実際に遭遇)。**run.py が起動時に同梱DLLの Zone.Identifier を削除して自己修復する**対処を入れてある。手動回避は zip右クリック→プロパティ→「許可する」→展開し直し、または `Get-ChildItem -Recurse \| Unblock-File` |
 
 ## 予想されるハマりどころ(遭遇したら結果を追記)
 
