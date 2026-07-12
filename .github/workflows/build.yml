@@ -1,0 +1,70 @@
+# 両OSのアプリをビルドする。手動実行(workflow_dispatch)と vタグpush で走り、
+# vタグの場合は GitHub Release を作って成果物を添付する。
+name: build
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build-macos:
+    runs-on: macos-latest  # arm64(Apple Silicon)。Intel Macは非サポート(決定済み)
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Set up venv and dependencies
+        run: |
+          python -m venv .venv
+          ./.venv/bin/pip install -r requirements.txt pyinstaller
+      - name: Build
+        run: ./build.sh
+      # 注意: upload-artifact はシンボリックリンクと実行権限を失うため、
+      # .app は生のまま上げず、必ず ditto で zip にしてから artifact 化する
+      - name: Zip .app with ditto
+        run: ditto -c -k --keepParent dist/chan-models.app dist/chan-models-macos.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chan-models-macos
+          path: dist/chan-models-macos.zip
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Set up venv and dependencies
+        run: |
+          python -m venv .venv
+          .venv\Scripts\pip install -r requirements.txt pyinstaller
+      - name: Build
+        run: .\build.bat
+      - name: Zip dist folder
+        run: Compress-Archive -Path dist\chan-models -DestinationPath dist\chan-models-windows.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chan-models-windows
+          path: dist/chan-models-windows.zip
+
+  release:
+    # vタグpushのときだけ、両OSの成果物を添付したReleaseを作る
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-macos, build-windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: dist
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/chan-models-macos.zip
+            dist/chan-models-windows.zip
+          generate_release_notes: true
