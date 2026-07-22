@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 @misetteichan
+# SPDX-License-Identifier: MIT
+
 # clicker-chan_mod.3mf(穴・十字を埋めた素の土台)から生成したパラメトリックモデル。
 # メッシュ(_DATA)は土台のみ。ボディの14x14角穴と足の十字穴は build() 内で
 # CSG(ブール演算)で新規に開ける。既定値(穴14.0 / アーム厚1.18)で元の実績版と一致する。
